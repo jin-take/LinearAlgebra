@@ -666,4 +666,202 @@ plt.show()
 defからのところに関数を定義として入れ、計算した値をそのまま代入してベクトルとして表示できるようにした。コード量が多くなるので、補助目盛とテキストはなくした。
 
 
+# 線形独立
+##### 線形独立イメージ
+線形結合である
 
+```math
+av + bw
+```
+の形のことを基に話す。v,wというベクトルは方向ベクトルが違う必要がある。
+例えば、
+
+```math
+\vec{v}=\begin{pmatrix}2\\3\end{pmatrix}
+,
+\vec{w}=\begin{pmatrix}1\\-2\end{pmatrix}
+```
+のような関係のことである。これは前回やったように、二つのベクトルが角度をnπ(n=0, 1, 2,...)を満たさない角度をなすことをいう。すなわち、
+
+```math
+\vec{v}=\begin{pmatrix}2\\3\end{pmatrix}
+,
+\vec{w}=\begin{pmatrix}4\\6\end{pmatrix}
+\\
+\\
+\vec{v}=α\vec{w}
+```
+上のように`スカラー積関係、倍数関係になったものを線形従属`という。`ならないもの線形独立`という。たとえ2つでなく、3つでもそれぞれが独立しなければならない。
+イメージではこんな感じでいいだろう。
+
+#####線形独立の定義
+<font color="Red">定義</font>
+Ax= 0のかいがx=0のみであるとき,列ベクトルは線形代数である.列ベクトルの線形結合Axにおいて零ベクトルとなるものは他にない.
+ベクトルの列v_1,v_2,....,v_nは,零ベクトルとなる線形結合が
+
+```math
+0v_1+0v_2+...+0v_n
+```
+のみであるとき,線形独立である.
+
+すなわち、
+
+
+```math
+
+すべてのx_iが零のときのみ,\\
+x_1v_1+x_2v_2+...+x_nv_n=0\\
+となる.
+```
+このようにならない場合が線形従属という。
+
+###プログラム
+#####2つの2要素を持つ列ベクトル同士の判定するプログラム
+
+```python:6pythonlinearindependece
+import numpy as np
+
+v = list()
+w = list()
+for i in range(2):
+    vbec = int(input())
+    v.append(vbec)
+for i in range(2):
+    wbec = int(input())
+    w.append(wbec)
+v = np.array(v)
+w = np.array(w)
+
+sarrus = v[0]*v[1] - v[1]*v[0]
+if sarrus == 0:
+    print("線形従属")
+else:
+    print("線形独立")
+```
+[Pythonで線形代数をやってみた(2)](
+https://qiita.com/jin237/items/d3c4b2d32d7e87db3b69)にあるコードを少しだけ書き換えたものである。
+これは2つの要素を持つベクトル同士でないと判定できない。
+最初に要素数をしてして、独立か従属かを判定するプログラムは以下のようになる。
+#####2つのn要素を持つ列ベクトル同士の判定するプログラム
+
+```python:6pythonlinearindependece2
+import numpy as np
+
+n = int(input())
+# =>3
+
+v = list()
+w = list()
+for i in range(n):
+    vbec = int(input())
+    v.append(vbec)
+for i in range(n):
+    wbec = int(input())
+    w.append(wbec)
+v = np.array(v)
+w = np.array(w)
+# =>1
+# =>2
+# =>3
+# =>3
+# =>2
+# =>1
+
+x = list()
+c = v[0]/w[0]
+
+for i in range(n): 
+    if v[i] == c*w[i]:
+        x.append("True")
+        continue
+    else:
+        break
+
+if len(x) == n:
+    print("線形従属")
+elif len(x) < n:
+    print("線形独立")
+# =>線形独立
+```
+### 基底
+#####ベクトル空間の基底の定義
+<font color="Red">定義</font>
+`ベクトル空間の基底とは,次の2つの性質を持つようなベクトルの列である:
+***基底ベクトルは,線形独立であり,空間を張る.***`
+
+ここでの基底についての詳しい説明は省く。
+
+#####標準基底
+具体例
+
+```math
+I =
+\begin{bmatrix}
+1 & 0\\
+0 & 1
+\end{bmatrix}
+の列ベクトルはR^2の標準基底である.
+```
+これより以下のように言える。
+
+```math
+(n×n)単位行列の列ベクトルはR^nの「標準基底」である.
+さらに、
+すべての(n×n)行列の列ベクトルはR^nの「標準基底」である
+```
+次元についてもここでは省略。
+
+###プログラム
+
+```math
+\vec{e_x}=\begin{pmatrix}1\\0\end{pmatrix},
+\vec{e_y}=\begin{pmatrix}0\\1\end{pmatrix}
+```
+とするとき,a=(2,3)は次のように表せる。
+
+```math
+\vec{a}=\begin{pmatrix}2\\3\end{pmatrix}=2\vec{e_x}+3\vec{e_y}
+=2\begin{pmatrix}0\\1\end{pmatrix}+3\begin{pmatrix}1\\0\end{pmatrix}
+```
+これより
+
+```math
+\vec{a},\vec{e_x},\vec{e_y}
+```
+の3つのベクトルを描写する。
+[Pythonで線形代数をやってみた(5)](https://qiita.com/jin237/items/2fdfe6de984eaff637b8)のベクトル3つverなので、新しくはない。
+
+#####元のベクトルと標準基底の描写プログラム
+
+```python
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+a = np.array([2, 3])
+e_x = np.array([1, 0]) 
+e_y = np.array([0, 1])  
+
+print("a:", a)
+print("e_x:", e_x)
+print("e_y:", e_y)
+      
+def arrow(start, size, color):
+    plt.quiver(start[0], start[1], size[0], size[1], 
+               angles="xy", scale_units="xy", scale=1, color=color)
+
+s = np.array([0, 0])  # 原点
+
+arrow(s, a, color="blue")
+arrow(s, e_x, color="red")
+arrow(s, e_y, color="red")
+
+# グラフ表示
+plt.xlim([-3,3])  # xの表示範囲
+plt.ylim([-3,3])  # yの表示範囲
+plt.xlabel("x", size=14)
+plt.ylabel("y", size=14)
+plt.grid()
+plt.axes().set_aspect("equal")  # 縦横比を同じに
+plt.show()
+```
